@@ -1,16 +1,12 @@
 # text preprocessing modules
-from string import punctuation
 import re  # regular expression
-import os
 import uvicorn
 from fastapi import FastAPI
 
 import torch
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from transformers import AutoModel, AutoTokenizer
 
-# from dependencies import *
-
+#pip list --format=freeze > requirements.txt
 
 app = FastAPI(
     title="'How To' Answer Generator",
