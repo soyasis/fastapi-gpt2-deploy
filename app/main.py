@@ -37,6 +37,12 @@ def clean_response(user_prompt, response):
     return response
 
 
+### TODOS
+#
+# Convert to post request?
+#
+
+
 @app.get("/answers")
 def generate_response(user_prompt: str, length: Optional[int] = 300):
     """
