@@ -1,22 +1,29 @@
 # text preprocessing modules
 import re  # regular expression
 import uvicorn
+from typing import Optional
 from fastapi import FastAPI
-
 import torch
-from transformers import AutoModel, AutoTokenizer
 
-#pip list --format=freeze > requirements.txt
+# from transformers import AutoModel, AutoTokenizer
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+
+# pip list --format=freeze > requirements.txt
 
 app = FastAPI(
     title="'How To' Answer Generator",
     description="A simple API using GPT-2 fine-tuned model for answering 'How to' questions",
-    version="0.1",
+    version="beta 0.1",
 )
 
-# load the sentiment model
-model = AutoModel.from_pretrained("plasticfruits/gpt2-finetuned-how-to-qa")
-tokenizer = AutoTokenizer.from_pretrained("plasticfruits/gpt2-finetuned-how-to-qa")
+# # Download models from Hugging face Hub
+# model = AutoModel.from_pretrained("plasticfruits/gpt2-finetuned-how-to-qa")
+# tokenizer = AutoTokenizer.from_pretrained("plasticfruits/gpt2-finetuned-how-to-qa")
+
+# load the sentiment model from subfolder
+path = "./model"
+model = GPT2LMHeadModel.from_pretrained(path)
+tokenizer = GPT2Tokenizer.from_pretrained(path)
 
 
 def clean_response(user_prompt, response):
@@ -31,7 +38,7 @@ def clean_response(user_prompt, response):
 
 
 @app.get("/answers")
-def generate_response(user_prompt: str):
+def generate_response(user_prompt: str, length: Optional[int] = 300):
     """
     """
     prompt = f"<|startoftext|>[WP] {user_prompt} [RESPONSE]"
@@ -40,7 +47,7 @@ def generate_response(user_prompt: str):
         generated,
         do_sample=True,
         top_k=50,
-        max_length=300,
+        max_length=length,
         top_p=0.95,
         num_return_sequences=1,
     )
