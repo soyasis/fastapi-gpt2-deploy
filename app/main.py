@@ -39,11 +39,11 @@ def clean_response(user_prompt, response):
     return response
 
 
-def save_qa_history(user_prompt, response):
+def save_qa_history(user_prompt, response, length):
     """
     """
     dt = datetime.now()
-    history_list = [user_prompt, response, dt]
+    history_list = [user_prompt, response, length, dt]
     with open("./history/qa_history.csv", "a", newline="") as f_object:
         writer_object = writer(f_object)
         writer_object.writerow(history_list)
@@ -76,11 +76,8 @@ def generate_response(user_prompt: str, length: Optional[int] = 300):
             user_prompt, tokenizer.decode(sample_output, skip_special_tokens=True)
         )
         response_dict = {"key": i, "response": response}
-        save_qa_history(user_prompt, response)
+        save_qa_history(user_prompt, response, length)
         data.append(response_dict)
     # output = tokenizer.decode(sample_outputs, skip_special_tokens=True)
     # output = tokenizer.decode(sample_output, skip_special_tokens=True)
     return {"data": data[0]["response"]}
-
-
-generate_response("How to make bread")
